@@ -45,22 +45,22 @@ Sanitized for public hosting: no credentials, no env values, no personal or clie
 
 ---
 
-### SpargoDomains
+### SpargoDomains — section regenerated 2026-08-23 (launch executed)
 
-**What it is:** A single-user, safety-first domain search-and-purchase tool over the official Cloudflare Registrar API — invent a name, verify live availability and price, register it at cost in your own Cloudflare account — with a public, crawler-indexable marketing site, a credential-free demo, a free DNS resilience checker, a draft pricing page, and now a renewal-notice loop (Renewal Sentinel) that turns approaching expiry dates into compliant emails through RelayFlow's rails.
+**What it is:** A single-user, safety-first domain search-and-purchase tool over the official Cloudflare Registrar API — invent a name, verify live availability and price, register it at cost in your own Cloudflare account — now publicly launched: the crawler-indexable marketing site, credential-free demo, free DNS resilience checker, draft pricing page, and 20 comparison/guide content pages are live on the production domain, with the Renewal Sentinel notice loop deployed dark behind its kill switch.
 
 **Stack:** React 19 + Vite + TypeScript, Tailwind + shadcn-style UI, TanStack Query. Hono API on Cloudflare Workers — one Worker serves the API, the private SPA, and a build-time-prerendered public site (28 routes, hostname-aware, sitemap + robots). Drizzle ORM on Cloudflare D1 (now including a deduped, append-only renewal-notices table). Cloudflare Access JWT auth gated to a single admin identity. Money as decimal strings via big.js. Nightly cron: read-only reconciler + notice derivation/dispatch. 192 Vitest cases + 11 Playwright tests.
 
-**Git:** branch `main`, last commit 2026-08-17 — "Act on the marketing handoff: hero, screener, and the demo's honest ending." Branch `launch-kit` now holds 13 unmerged commits across two completed missions: the launch kit (SEO prerendering, DNS checker, audit fixes, stubbed-checkout pricing, 20 content pages, post drafts, go-live checklist) and Renewal Sentinel (notification engine, RelayFlow dispatch adapter with a documented contract, calm 30/7/1-day templates with rendered previews, an end-to-end dry-run integration test, and a doc-sync pass that fixed the stale counts and marketing copy). Nothing merged, nothing deployed, nothing sent.
+**Git:** branch `main`, last commit 2026-08-23 — `launch-kit` (both completed missions: the launch kit and Renewal Sentinel) merged on the owner's go order and deployed to production the same night; the code now also lives in a private GitHub repository. Production migrations applied additively; rollback is one revert plus a redeploy.
 
-**Runs today:** Yes — `npm run dev` after a one-time local DB migration; the full product works with zero credentials (mock provider + dry-run defaults). Verify suite green (typecheck, lint, 192 tests, build) plus 11 e2e. Production still ships purchase-disabled and dry-run; the notice loop additionally ships behind its own kill switch in dry-run dispatch mode.
+**Runs today:** Yes — live and verified in production: the public pages serve real prerendered HTML (marketing title confirmed, comparison pages answering 200, robots and sitemap advertised), the DNS checker runs real checks on the live site, and the private app hostname still bounces unauthenticated visitors to the edge login. The public contact mailbox named on the privacy page now receives mail: email routing is enabled with MX and SPF records live, forwarding to the owner's personal inbox — the site's own DNS checker immediately noticed and honestly reports every layer concentrated on one provider, as designed. Production remains purchase-disabled and dry-run; the notice loop ships dark behind its own kill switch.
 
 **Top 3 gaps (docs vs code):**
 1. Renewal Sentinel is built and proven end to end but dark: dispatch defaults to dry-run behind a kill switch, and going live needs the counterpart internal-send endpoint on RelayFlow's side (the contract is written and paste-ready) plus a deliberate two-variable flip. The pricing page's retention promise now has code behind it, but no customer has seen an email.
-2. The launch is parked one approval away: `launch-kit` contains the entire go-live kit with a checklist scripted to about 25 minutes, but stays unmerged until the owner signs off on the pricing default, the competitor-claim citations, and the post drafts.
-3. The domain's public contact mailbox named on the privacy page still can't receive mail — wiring it up is a five-minute checklist step that also feeds the notice loop's reply path.
+2. Search-engine property verification and sitemap submission are parked as blocked: they need the owner's own account session in a browser, which no tool could reach tonight. The live robots file already advertises the sitemap, so discovery happens regardless — submission only accelerates it and unlocks the reporting console.
+3. The checklist expected the private hostname's robots file to answer with a disallow, but the edge access gate intercepts the request before the Worker can respond — harmless in practice (every URL there redirects off-domain to a login), fixable with a deliberate bypass rule for that one path if wanted.
 
-**Highest-leverage next move:** Approve and run the launch checklist (merge, migrate, deploy — under 30 minutes); in parallel, build RelayFlow's side of the documented dispatch contract so Renewal Sentinel can leave dry-run and the first retention email becomes real.
+**Highest-leverage next move:** Owner completes the parked search-console step (about five minutes in a signed-in browser), then runs the announcement plan on the owner's own schedule — the drafts are ready and nothing has been posted, by explicit instruction. Meanwhile RelayFlow's side of the dispatch contract is what turns the retention promise real.
 
 ---
 
