@@ -123,4 +123,14 @@ Next: execute the deletion pass already queued in the mission log.
 
 **4. K² launch sequence as RelayFlow's first real workflow.** Largely realized as of 2026-08-24: the sequence runner now exists and ships with the six-step K² welcome flow seeded, rehearsable, and dry-run-verified end to end. What remains of this idea is the owner provisioning pass, the approved welcome copy, and — longer term — the bridge that lets compiled canvas workflows (branches, wait-for-event) feed the runner. Effort remaining: provisioning is under an hour; the canvas bridge is its own project.
 
-**5. HQ dashboard that reads this file.** The ops directory already contains hand-built command-center HTML dashboards, and this repo now exposes machine state at a stable raw URL. A single static page that fetches and renders HQ-STATE.md — active projects up top, staleness highlighted by last-commit age — turns the existing dashboard habit into one that is always current and readable from any device, including by the chat-side Claude this file was built for. Effort: ~4–6 hours.
+**5. HQ dashboard that reads this file.** Realized 2026-08-23: built as `hq-dashboard/` in this repo and served by GitHub Pages — see the DASHBOARD section below. Nothing remains of this idea except using it.
+
+---
+
+## DASHBOARD
+
+**What it is:** A live rendering of this file — one self-contained static page (`hq-dashboard/index.html`, no build step, no backend) that fetches the raw HQ-STATE.md on open and on demand, so the current state is readable from any device without cloning anything.
+
+**Where:** https://spartangomez.github.io/hq-state/hq-dashboard/ (GitHub Pages, enabled 2026-08-23 from the CLI, serving `main` root; the page itself reads only the raw public URL of this file).
+
+**How it renders:** ACTIVE as cards up top (top gaps, highest-leverage next move, the rest folded away), EVERYTHING ELSE as a compact table, NEW BUILDS as a numbered list, staleness color-coded by last-commit age (green under 7 days, amber under 30, red past 30). Sections this file grows later render as plain markdown rather than breaking, and a fetch failure falls back to the viewer's last cached copy — so regenerating this file per the standing rule is the only maintenance the dashboard needs. Build record: `hq-dashboard/STATUS.md`.
