@@ -66,8 +66,8 @@ Sanitized for public hosting: no credentials, no env values, no personal or clie
 
 ## EVERYTHING ELSE
 
-**KnwoeldgeSquaredClaude (K² / KnowledgeSquared)** — Next.js 15 + Supabase trilingual web app that translates research papers into plain language ("Science, translated"), live at its custom domain. Verdict mission 2026-08-23: `feat/calm-redesign` passed the repo's full definition-of-done (typecheck/lint clean, 137 unit tests, production build, redesign verified against live data with zero console errors, zero fixes needed) — **MERGE-READY**, held unmerged only because pushing master auto-deploys; the one-line merge command is in the repo's VERDICT.md (branch `claude/calm-redesign-verdict-4d9a22`).
-Next: owner runs that merge command when ready to ship (the push IS the deploy), then the standing launch gate: the Anthropic spend cap (card-0008).
+**KnwoeldgeSquaredClaude (K² / KnowledgeSquared)** — Next.js 15 + Supabase trilingual web app that translates research papers into plain language ("Science, translated"), live at its custom domain. Verdict mission 2026-08-23: `feat/calm-redesign` passed the repo's full definition-of-done with zero fixes, and on the owner's explicit order was **merged and deployed the same day** — the calm redesign (three-item nav, single-link trending, reader keyboard + hand-off, calm Browse) is verified live in EN and RU. The spend-cap card (0008) was attempted on order but stays owner-only: no browser session to drive, and the paid translate step has provably been running capless for weeks.
+Next: owner sets the Anthropic monthly cap (~2 minutes, console → Limits, ~$30/mo on record) — now the only launch gate standing.
 
 **MeditationApp (Sember)** — Offline meditation app: Tauri 2 + React desktop plus installable PWA, pre-rendered neural-TTS audio, no accounts, no telemetry; shipping, last commit 2026-08-12. Known live issue: re-rendered audio never reaches returning web clients until the service-worker cache name is bumped.
 Next: wire the cache-name bump into the audio-deploy step; leave the deliberately frozen internal identifiers alone.
