@@ -7,22 +7,22 @@ Sanitized for public hosting: no credentials, no env values, no personal or clie
 
 ## ACTIVE
 
-### RelayFlow (dir: SpargoEmailAutomations) — section regenerated 2026-08-24
+### RelayFlow (dir: SpargoEmailAutomations) — section regenerated 2026-08-24 (later)
 
-**What it is:** Diagram-first email/SMS automation builder that now carries a real execution engine underneath the demo: a scheduled sequence runner, one-off broadcast sends, and full deliverability rails, built to run a six-email welcome flow for the K² newsletter on a five-minute schedule.
+**What it is:** Diagram-first email/SMS automation builder carrying a real execution engine underneath the demo: a scheduled sequence runner, approval-gated broadcast sends, full deliverability rails, and now an internal doorway through which other first-party services request single compliant transactional sends — built to run a six-email welcome flow for the K² newsletter and to carry SpargoDomains' renewal notices.
 
-**Stack:** Next.js 16 (App Router) + React 19 + TypeScript strict, Tailwind v4, React Flow 12 + dagre, Zustand, Zod v4. Supabase (Postgres, 7 migrations) for send-side data AND scheduling (pg_cron calling an authenticated tick endpoint), with a zero-config local file fallback behind every store. Transactional email provider behind a signed inbound webhook with a full event ledger; mock providers plus an engine-wide dry-run mode by default; one shared rate limiter paced at 2 requests/second. Vercel hosting with a code-level "public surface only" deploy gate. 34 Vitest suites (260 tests).
+**Stack:** Next.js 16 (App Router) + React 19 + TypeScript strict, Tailwind v4, React Flow 12 + dagre, Zustand, Zod v4. Supabase (Postgres, 9 migrations) for send-side data AND scheduling (pg_cron calling an authenticated tick endpoint), with a zero-config local file fallback behind every store. Transactional email provider behind a signed inbound webhook with a full event ledger; mock providers plus an engine-wide dry-run mode by default; one shared rate limiter paced at 2 requests/second. Vercel hosting with a code-level "public surface only" deploy gate. 35 Vitest suites (278 tests).
 
-**Git:** three mission phases (execution engine → deliverability/broadcasts/templates/hardening → ledger, soft-bounce escalation, flow simulator) sit as one open draft PR of per-deliverable commits; base `main` last moved 2026-08-18.
+**Git:** three mission phases plus an amendments pass (execution engine → deliverability/broadcasts/templates/hardening → ledger, soft-bounce escalation, flow simulator → bulk-send philosophy retrofit + the internal send doorway) sit as one open draft PR of per-deliverable commits; base `main` last moved 2026-08-18.
 
-**Runs today:** Yes — zero config: the builder demo, plus the whole execution loop in dry-run (enroll → scheduled steps → suppression gate → logs → completion) against local file stores. One-command sequence rehearsal on an injected clock, a step-preview renderer, and a 10-check health command. Real sending stays deliberately unprovisioned; the engine refuses double-sends by construction and auto-suppresses on hard bounce, complaint, or repeated soft bounces.
+**Runs today:** Yes — zero config: the builder demo, plus the whole execution loop in dry-run against local file stores. One-command sequence rehearsal on an injected clock, a step-preview renderer, and a 13-check health command. Real sending stays deliberately unprovisioned AND deliberately hard to reach: broadcast mode is off by default and every real batch needs an individual operator approval; internal transactional notices are held unsent until the brand row carries a real postal address; the engine refuses double-sends by construction and auto-suppresses on hard bounce, complaint, or repeated soft bounces.
 
 **Top 3 gaps (docs vs code):**
-1. Everything is built but nothing is provisioned or merged: the draft PR awaits review, and the dedicated database project, hosting environment, webhook registration, and the five-minute schedule are all owner-hands steps, scripted end to end in the repo's deploy runbook.
-2. The six-email welcome copy in the seed is still draft — the approved text never landed in the repo; swapping it in is a data update, not a deploy.
-3. The canvas demo and the execution engine remain parallel systems: compiled canvas workflows (branches, wait-for-event) do not feed the runner — only linear sequences and broadcasts execute — and the demo's core domain (contacts, automations) is still per-browser localStorage.
+1. The two halves of the Renewal Sentinel loop have not shaken hands: RelayFlow's internal send doorway is built, tested end to end in dry-run, and idempotent per (service, request identifier) — but it was shaped without sight of the dispatch contract SpargoDomains wrote (that file lives only on the owner's machine), so contract reconciliation and the Sentinel's own acceptance test are parked until the contract is pasted into the shared coordination log or the repo becomes reachable.
+2. Everything is built but nothing is provisioned or merged: the draft PR awaits review, and the dedicated database project, hosting environment, webhook registration, and the five-minute schedule are owner-hands steps, scripted end to end in the deploy runbook. The six-email welcome copy in the seed is still draft.
+3. The canvas demo and the execution engine remain parallel systems: compiled canvas workflows (branches, wait-for-event) do not feed the runner — only linear sequences, broadcasts, and single notices execute — and the demo's core domain is still per-browser localStorage.
 
-**Highest-leverage next move:** The owner provisioning pass (database, hosting, webhook, schedule — under an hour with the runbook), a dry-run soak, then the approved welcome copy: that turns three phases of engine work into the product's first standing production workload.
+**Highest-leverage next move:** Paste the Sentinel dispatch contract into the coordination log and reconcile the doorway to it exactly — that plus the owner provisioning pass turns both products' halves into the first real standing workload: compliant renewal notices, end to end.
 
 ---
 
