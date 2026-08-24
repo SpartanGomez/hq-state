@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPARTAN HQ — LIVE</title>
+<style>
+  :root{ --bg:#14171c; --panel:#1c2129; --panel2:#232a34; --line:#323b48;
+    --ink:#e8e4da; --dim:#9aa3ad; --mute:#6b7580; --steel:#7fa3c7; --chalk:#f2efe6;
+    --ok:#79b791; --warn:#d9a44a; --bad:#c96b5f; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:Georgia,serif;padding:22px 16px 60px}
+  .wrap{max-width:1080px;margin:0 auto}
+  header{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:14px;flex-wrap:wrap;gap:6px}
+  h1{font-size:22px;letter-spacing:.14em;color:var(--chalk);font-weight:normal}
+  h1 span{color:var(--steel)}
+  .sub{color:var(--mute);font-size:12.5px;font-style:italic}
+  h2{font-size:11.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);font-weight:normal;margin:24px 0 10px}
+  a{color:var(--steel)}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:.92em;color:var(--steel)}
+
+  /* status strip */
+  #strip{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;font-size:12px;color:var(--mute)}
+  #fetchedAt{font-family:ui-monospace,Consolas,monospace;color:var(--dim)}
+  button#refresh{background:var(--panel2);color:#dce8f4;border:1px solid var(--steel);padding:6px 14px;font-family:inherit;font-size:13px;cursor:pointer;letter-spacing:.04em}
+  button#refresh:hover{background:#2c3a4c}
+  button#refresh[disabled]{opacity:.5;cursor:wait}
+  #genline{font-style:italic}
+
+  /* error / offline */
+  #errbar{display:none;border:1px solid var(--bad);border-left:6px solid var(--bad);background:#241c1c;color:#e0b3ab;padding:12px 14px;font-size:13px;margin-bottom:14px;line-height:1.5}
+  #errbar b{color:#eeccc5;font-weight:normal}
+
+  /* badges */
+  .badge{font-family:ui-monospace,Consolas,monospace;font-size:9.5px;letter-spacing:.1em;padding:2px 7px;border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+  .badge.ok{border-color:var(--ok);color:var(--ok)}
+  .badge.warn{border-color:var(--warn);color:var(--warn)}
+  .badge.bad{border-color:var(--bad);color:var(--bad)}
+  .badge.cool{border-color:var(--steel);color:var(--steel)}
+
+  /* active project cards */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:820px){.grid{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);padding:14px 16px}
+  .card h3{font-size:16px;color:var(--chalk);font-weight:normal;margin-bottom:4px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .meta{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;color:var(--mute);margin-bottom:8px}
+  .what{font-size:13px;color:var(--dim);line-height:1.5;margin-bottom:10px}
+  .what b,.what strong{color:var(--ink);font-weight:normal}
+  .lbl{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:4px}
+  .gaps ol{margin:0 0 10px 18px}
+  .gaps li{font-size:12.5px;color:var(--dim);line-height:1.5;padding:3px 0}
+  .gaps li b,.gaps li strong{color:var(--ink);font-weight:normal}
+  .next{border:1px solid var(--line);border-left:3px solid var(--steel);background:var(--panel2);padding:8px 11px;font-size:12.5px;color:var(--dim);line-height:1.5;margin-bottom:10px}
+  .next b,.next strong{color:var(--ink);font-weight:normal}
+  details.more{border-top:1px dashed #2a323d;margin-top:2px}
+  details.more summary{cursor:pointer;padding:7px 0 3px;color:var(--mute);font-size:11px;letter-spacing:.12em;text-transform:uppercase;list-style:none}
+  details.more summary::after{content:" ▸"}
+  details.more[open] summary::after{content:" ▾"}
+  details.more .fld{font-size:12px;color:var(--dim);line-height:1.5;padding:4px 0;border-bottom:1px dashed #232a34}
+  details.more .fld:last-child{border-bottom:none}
+  details.more .fld b,details.more .fld strong{color:var(--ink);font-weight:normal}
+  details.more .fk{color:var(--steel);font-style:italic}
+
+  /* everything-else table */
+  .tblwrap{overflow-x:auto}
+  table.compact{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);font-size:12.5px}
+  .compact th{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);font-weight:normal;text-align:left;padding:8px 12px;border-bottom:1px solid var(--line)}
+  .compact td{padding:8px 12px;border-bottom:1px dashed #2a323d;color:var(--dim);line-height:1.45;vertical-align:top}
+  .compact tr:last-child td{border-bottom:none}
+  .compact .nm{color:var(--chalk);cursor:pointer;white-space:nowrap}
+  .compact .nm::after{content:" ▸";color:var(--mute);font-size:10px}
+  .compact tr.open .nm::after{content:" ▾"}
+  .compact .desc{display:none;color:var(--mute);font-size:12px;margin-top:5px;line-height:1.5;white-space:normal;max-width:420px}
+  .compact tr.open .desc{display:block}
+  .compact td.age{white-space:nowrap}
+  @media(max-width:640px){
+    .compact thead{display:none}
+    .compact, .compact tbody, .compact tr, .compact td{display:block;width:100%}
+    table.compact{border:none;background:none}
+    .compact tr{background:var(--panel);border:1px solid var(--line);margin-bottom:8px;padding:4px 0}
+    .compact td{border-bottom:none;padding:5px 12px}
+    .compact td.age{padding-top:0}
+    .compact td.nxt::before{content:"Next: ";color:var(--steel);font-style:italic}
+    .compact td.nxt{padding-top:0}
+  }
+
+  /* new builds */
+  .build{background:var(--panel);border:1px solid var(--line);padding:11px 14px;margin-bottom:10px;display:flex;gap:12px}
+  .build .num{font-family:ui-monospace,Consolas,monospace;color:var(--steel);font-size:15px;flex:0 0 auto;padding-top:1px}
+  .build .bt{color:var(--chalk);font-size:14px;margin-bottom:4px;display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .build .bb{font-size:12.5px;color:var(--dim);line-height:1.5}
+  .build .bb b,.build .bb strong{color:var(--ink);font-weight:normal}
+
+  /* unknown sections / markdown fallback */
+  .mdcard{background:var(--panel);border:1px solid var(--line);padding:12px 16px;font-size:13px;color:var(--dim);line-height:1.55}
+  .mdcard h1,.mdcard h2,.mdcard h3,.mdcard h4{color:var(--chalk);font-weight:normal;margin:10px 0 6px;font-size:14.5px;letter-spacing:.04em}
+  .mdcard p{margin:6px 0}
+  .mdcard ul,.mdcard ol{margin:6px 0 6px 20px}
+  .mdcard b,.mdcard strong{color:var(--ink);font-weight:normal}
+  .mdcard pre{overflow-x:auto;background:var(--panel2);padding:8px;font-size:11.5px}
+  pre.mdraw{white-space:pre-wrap;overflow-x:auto;background:var(--panel);border:1px solid var(--line);padding:12px;font-size:11.5px;color:var(--dim);font-family:ui-monospace,Consolas,monospace;line-height:1.5}
+
+  #loading{color:var(--mute);font-style:italic;font-size:13px;padding:20px 0}
+  footer{margin-top:28px;border-top:1px solid var(--line);padding-top:10px;color:var(--mute);font-size:11px;line-height:1.7}
+  .dot{font-size:13px;vertical-align:-1px}
+  .dot.ok{color:var(--ok)} .dot.warn{color:var(--warn)} .dot.bad{color:var(--bad)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1><span>▣</span> SPARTAN HQ — LIVE</h1>
+    <span class="sub">rendered from <a href="https://github.com/SpartanGomez/hq-state" target="_blank" rel="noopener">hq-state / HQ-STATE.md</a></span>
+  </header>
+
+  <div id="strip">
+    <button id="refresh">refresh</button>
+    <span id="fetchedAt"></span>
+    <span id="genline"></span>
+  </div>
+
+  <div id="errbar"></div>
+  <div id="loading">fetching HQ-STATE.md…</div>
+  <div id="content"></div>
+
+  <footer>
+    Staleness by last-commit age: <span class="dot ok">●</span> under 7 days · <span class="dot warn">●</span> under 30 · <span class="dot bad">●</span> 30 or more · unmarked = no date in the entry.<br>
+    This page reads exactly one public file and nothing else — no accounts, no analytics, no storage beyond a local cached copy for offline viewing.
+  </footer>
+</div>
+<noscript><p style="color:#d9a44a">This dashboard needs JavaScript to fetch HQ-STATE.md. The raw file itself is at <a href="https://raw.githubusercontent.com/SpartanGomez/hq-state/main/HQ-STATE.md">raw.githubusercontent.com</a>.</p></noscript>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" integrity="sha512-xeUh+KxNyTufZOje++oQHstlMQ8/rpyzPuM+gjMFYK3z5ILJGE7l2NvYL+XfliKURMpBIKKp1XoPN/qswlSMFA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+"use strict";
+const RAW_URL = "https://raw.githubusercontent.com/SpartanGomez/hq-state/main/HQ-STATE.md";
+const $ = id => document.getElementById(id);
+
+// ---------- safe storage (localStorage on PC, memory in sandboxed previews) ----------
+const store = (() => {
+  let mem = {};
+  try { localStorage.setItem("__t","1"); localStorage.removeItem("__t");
+    return { get:k=>localStorage.getItem(k), set:(k,v)=>localStorage.setItem(k,v) };
+  } catch(e){ return { get:k=>mem[k]??null, set:(k,v)=>{mem[k]=v;} }; }
+})();
+
+// ---------- markdown helpers (marked from cdnjs; degrade to a mini formatter if it never loaded) ----------
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const hasMarked = () => typeof marked !== "undefined";
+function miniInline(s){
+  return esc(s)
+    .replace(/\*\*([^*]+)\*\*/g,"<b>$1</b>")
+    .replace(/`([^`]+)`/g,"<code>$1</code>")
+    .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
+function inline(s){
+  if(!s) return "";
+  try { return hasMarked() ? marked.parseInline(esc(s)) : miniInline(s); }
+  catch(e){ return miniInline(s); }
+}
+function block(s){
+  if(!s) return "";
+  try { return hasMarked() ? '<div class="mdcard">'+marked.parse(esc(s))+"</div>" : '<pre class="mdraw">'+esc(s)+"</pre>"; }
+  catch(e){ return '<pre class="mdraw">'+esc(s)+"</pre>"; }
+}
+
+// ---------- staleness ----------
+function newestDate(text){
+  const m = String(text).match(/\b20\d{2}-\d{2}-\d{2}\b/g);
+  if(!m) return null;
+  return m.map(d=>d).sort().pop();
+}
+function ageBadge(dateStr){
+  if(!dateStr) return '<span class="badge">NO DATE</span>';
+  const days = Math.max(0, Math.floor((Date.now() - new Date(dateStr+"T00:00:00")) / 864e5));
+  const cls = days < 7 ? "ok" : days < 30 ? "warn" : "bad";
+  return '<span class="badge '+cls+'">'+days+'D · '+esc(dateStr)+"</span>";
+}
+
+// ---------- parser: tolerant of the file's real structure ----------
+function splitSections(md){
+  const lines = md.replace(/\r/g,"").split("\n");
+  const sections = [];
+  let cur = { title:"", lines:[] };   // preamble first
+  for(const ln of lines){
+    const h = ln.match(/^##\s+(.+?)\s*$/);
+    if(h && !ln.startsWith("###")){ sections.push(cur); cur = { title:h[1], lines:[] }; }
+    else cur.lines.push(ln);
+  }
+  sections.push(cur);
+  return sections;
+}
+const body = sec => sec.lines.join("\n").replace(/^\s*---\s*$/gm,"").trim();
+const paragraphs = txt => txt.split(/\n\s*\n/).map(p=>p.trim()).filter(Boolean);
+
+function parseActive(sec){
+  const projects = [];
+  let cur = null;
+  for(const ln of sec.lines){
+    const h = ln.match(/^###\s+(.+?)\s*$/);
+    if(h){
+      if(cur) projects.push(cur);
+      let head = h[1], dir = null, regen = null;
+      const dm = head.match(/\(dir:\s*([^)]+)\)/i);   if(dm){ dir = dm[1].trim(); head = head.replace(dm[0],""); }
+      const rm = head.match(/regenerated\s+(20\d{2}-\d{2}-\d{2})/i); if(rm) regen = rm[1];
+      head = head.split(/\s+[—–]\s+/)[0].trim();
+      cur = { name: head, dir, regen, fields:{}, order:[], _fk:null };
+      continue;
+    }
+    if(!cur) continue;
+    if(/^\s*---\s*$/.test(ln)) continue;
+    const f = ln.match(/^\*\*([^*]+?):\*\*\s*(.*)$/);
+    if(f){
+      const raw = f[1].trim(), key = raw.toLowerCase();
+      let k = key.startsWith("what it is") ? "what"
+            : key.startsWith("stack") ? "stack"
+            : key.startsWith("git") ? "git"
+            : key.startsWith("runs today") ? "runs"
+            : (key.includes("gap") ? "gaps" : (key.includes("next move") ? "next" : "x:"+raw));
+      cur.fields[k] = f[2] ? f[2]+"\n" : "";
+      cur.order.push(k); cur._fk = k;
+      continue;
+    }
+    if(cur._fk) cur.fields[cur._fk] += ln+"\n";
+  }
+  if(cur) projects.push(cur);
+  for(const p of projects){
+    for(const k in p.fields) p.fields[k] = p.fields[k].trim();
+    if(p.fields.gaps){
+      const items = p.fields.gaps.split(/\n(?=\d+\.\s)/).map(s=>s.replace(/^\d+\.\s*/,"").replace(/\n/g," ").trim()).filter(Boolean);
+      p.gapList = items.length ? items : null;
+    }
+    p.lastDate = newestDate(p.fields.git || "") || newestDate(Object.values(p.fields).join("\n")) || p.regen;
+  }
+  return projects;
+}
+
+function parseElse(sec){
+  const rows = [], leftovers = [];
+  for(const p of paragraphs(body(sec))){
+    const m = p.match(/^\*\*(.+?)\*\*\s*[—–-]?\s*([\s\S]*)$/);
+    if(!m){ leftovers.push(p); continue; }
+    let rest = m[2], next = "";
+    const nm = rest.match(/(?:^|\n)Next:\s*([\s\S]*)$/);
+    if(nm){ next = nm[1].replace(/\n/g," ").trim(); rest = rest.slice(0, nm.index).trim(); }
+    rows.push({ name:m[1].trim(), desc:rest.replace(/\n/g," ").trim(), next, lastDate:newestDate(p) });
+  }
+  return { rows, leftovers };
+}
+
+function parseBuilds(sec){
+  const items = [], leftovers = [];
+  for(const p of paragraphs(body(sec))){
+    const m = p.match(/^\*\*(\d+)\.\s*([\s\S]+?)\*\*\s*([\s\S]*)$/);
+    if(!m){ leftovers.push(p); continue; }
+    let bodyTxt = m[3].replace(/\n/g," ").trim(), effort = null;
+    const em = bodyTxt.match(/Effort(?:\s+remaining)?:\s*([^.]+)\.?\s*$/i);
+    if(em){ effort = em[1].trim(); bodyTxt = bodyTxt.slice(0, em.index).trim(); }
+    items.push({ num:m[1], title:m[2].replace(/\.\s*$/,"").trim(), body:bodyTxt, effort });
+  }
+  return { items, leftovers };
+}
+
+// ---------- render ----------
+function render(md){
+  const sections = splitSections(md);
+  const out = [];
+
+  const pre = body(sections[0]).replace(/^#\s+.*$/m,"").trim();
+  const gen = pre.split("\n")[0] || "";
+  $("genline").innerHTML = gen ? inline(gen) : "";
+
+  for(const sec of sections.slice(1)){
+    const t = sec.title.toUpperCase();
+    if(t.startsWith("ACTIVE")){
+      const projects = parseActive(sec);
+      out.push("<h2>Active — "+projects.length+" in play</h2>");
+      if(!projects.length){ out.push(block(body(sec))); continue; }
+      out.push('<div class="grid">');
+      for(const p of projects){
+        const moreKeys = p.order.filter(k=>!["what","gaps","next"].includes(k));
+        out.push('<div class="card">'
+          + "<h3>"+esc(p.name)+" "+ageBadge(p.lastDate)+"</h3>"
+          + '<div class="meta">'+(p.dir?("dir: "+esc(p.dir)):"")+(p.dir&&p.regen?" · ":"")+(p.regen?("section regenerated "+esc(p.regen)):"")+"</div>"
+          + (p.fields.what?'<div class="what">'+inline(p.fields.what)+"</div>":"")
+          + (p.gapList?'<div class="gaps"><div class="lbl">Top gaps</div><ol>'+p.gapList.map(g=>"<li>"+inline(g)+"</li>").join("")+"</ol></div>"
+             : (p.fields.gaps?'<div class="gaps"><div class="lbl">Top gaps</div><div class="what">'+inline(p.fields.gaps.replace(/\n/g," "))+"</div></div>":""))
+          + (p.fields.next?'<div class="next"><div class="lbl">Highest-leverage next move</div>'+inline(p.fields.next.replace(/\n/g," "))+"</div>":"")
+          + (moreKeys.length?'<details class="more"><summary>'+moreKeys.map(k=>({stack:"stack",git:"git",runs:"runs today"}[k]||k.replace(/^x:/,""))).join(" · ")+"</summary>"
+              + moreKeys.map(k=>'<div class="fld"><span class="fk">'+esc(({stack:"Stack",git:"Git",runs:"Runs today"}[k]||k.replace(/^x:/,"")))+":</span> "+inline(p.fields[k].replace(/\n/g," "))+"</div>").join("")
+              + "</details>":"")
+          + "</div>");
+      }
+      out.push("</div>");
+    }
+    else if(t.startsWith("EVERYTHING ELSE")){
+      const { rows, leftovers } = parseElse(sec);
+      out.push("<h2>Everything else — "+rows.length+" on the shelf</h2>");
+      if(rows.length){
+        out.push('<div class="tblwrap"><table class="compact"><thead><tr><th>Project</th><th>Last activity</th><th>Next</th></tr></thead><tbody>');
+        for(const r of rows){
+          out.push('<tr onclick="this.classList.toggle(\'open\')"><td><span class="nm">'+inline(r.name)+'</span><div class="desc">'+inline(r.desc)+'</div></td>'
+            + '<td class="age">'+ageBadge(r.lastDate)+"</td>"
+            + '<td class="nxt">'+inline(r.next||"—")+"</td></tr>");
+        }
+        out.push("</tbody></table></div>");
+        out.push('<p class="sub" style="margin-top:6px">tap a project name for its one-line description</p>');
+      }
+      for(const l of leftovers) out.push(block(l));
+    }
+    else if(t.startsWith("NEW BUILDS")){
+      const { items, leftovers } = parseBuilds(sec);
+      out.push("<h2>New builds worth starting</h2>");
+      for(const b of items){
+        out.push('<div class="build"><span class="num">'+esc(b.num)+"</span><div style='flex:1'>"
+          + '<div class="bt"><span>'+inline(b.title)+"</span>"+(b.effort?'<span class="badge cool">'+esc(b.effort.toUpperCase())+"</span>":"")+"</div>"
+          + '<div class="bb">'+inline(b.body)+"</div></div></div>");
+      }
+      for(const l of leftovers) out.push(block(l));
+    }
+    else {
+      // unknown section: render as plain markdown instead of breaking
+      out.push("<h2>"+esc(sec.title)+"</h2>");
+      out.push(block(body(sec)));
+    }
+  }
+  $("content").innerHTML = out.join("\n");
+  $("loading").style.display = "none";
+}
+
+// ---------- fetch / refresh / offline ----------
+function stamp(when, cached){
+  const d = new Date(when);
+  $("fetchedAt").textContent = (cached ? "cached copy from " : "fetched ") + d.toLocaleString([], {month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", second:"2-digit"});
+}
+async function load(){
+  const btn = $("refresh");
+  btn.disabled = true; btn.textContent = "fetching…";
+  $("errbar").style.display = "none";
+  try {
+    const res = await fetch(RAW_URL + "?t=" + Date.now(), { cache: "no-store" });
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const text = await res.text();
+    if(!/^#\s*HQ-STATE/m.test(text)) throw new Error("response did not look like HQ-STATE.md");
+    render(text);
+    const at = Date.now();
+    stamp(at, false);
+    try { store.set("hq-dash-cache", JSON.stringify({ text, at })); } catch(e){}
+  } catch(err){
+    const cachedRaw = store.get("hq-dash-cache");
+    let note = "";
+    if(cachedRaw){
+      try { const c = JSON.parse(cachedRaw); render(c.text); stamp(c.at, true);
+        note = " Showing the last copy this device fetched.";
+      } catch(e){}
+    }
+    if(!note) $("loading").textContent = "nothing to show yet — retry when back online.";
+    $("errbar").innerHTML = "<b>Couldn't reach HQ-STATE.md</b> ("+esc(err.message)+")."+note+" Check the connection, then hit refresh.";
+    $("errbar").style.display = "block";
+  } finally {
+    btn.disabled = false; btn.textContent = "refresh";
+  }
+}
+$("refresh").addEventListener("click", load);
+load();
+</script>
+</body>
+</html>
