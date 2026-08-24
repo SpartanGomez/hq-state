@@ -66,8 +66,8 @@ Sanitized for public hosting: no credentials, no env values, no personal or clie
 
 ## EVERYTHING ELSE
 
-**KnwoeldgeSquaredClaude (K² / KnowledgeSquared)** — Next.js 15 + Supabase web app that translates research papers into plain language ("Science, translated"), with a versioned-prompt LLM pipeline; last commit 2026-08-03, runs with setup, but the whole calm-redesign sits unmerged on `feat/calm-redesign` amid ship-in-progress docs.
-Next: run its own definition-of-done (typecheck, tests, e2e, seed), then merge or kill the branch.
+**KnwoeldgeSquaredClaude (K² / KnowledgeSquared)** — Next.js 15 + Supabase trilingual web app that translates research papers into plain language ("Science, translated"), live at its custom domain. Verdict mission 2026-08-23: `feat/calm-redesign` passed the repo's full definition-of-done (typecheck/lint clean, 137 unit tests, production build, redesign verified against live data with zero console errors, zero fixes needed) — **MERGE-READY**, held unmerged only because pushing master auto-deploys; the one-line merge command is in the repo's VERDICT.md (branch `claude/calm-redesign-verdict-4d9a22`).
+Next: owner runs that merge command when ready to ship (the push IS the deploy), then the standing launch gate: the Anthropic spend cap (card-0008).
 
 **MeditationApp (Sember)** — Offline meditation app: Tauri 2 + React desktop plus installable PWA, pre-rendered neural-TTS audio, no accounts, no telemetry; shipping, last commit 2026-08-12. Known live issue: re-rendered audio never reaches returning web clients until the service-worker cache name is bumped.
 Next: wire the cache-name bump into the audio-deploy step; leave the deliberately frozen internal identifiers alone.
