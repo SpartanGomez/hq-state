@@ -30,18 +30,18 @@ Sanitized for public hosting: no credentials, no env values, no personal or clie
 
 **What it is:** A private, Spanish-language "answer machine" PWA for one older adult: she speaks a question or photographs a letter, gets one plain-language card back, and the app remembers her ongoing topics so she never re-explains them.
 
-**Stack:** TypeScript monorepo. Client: Vite + React 19 PWA (7 screens, service worker, strict same-origin CSP). Server: Express 5 + SQLite, SSE streaming, in-process cron (nightly backup, timed purges). Claude models via the official SDK, model-routed (cheap text model + stronger vision/escalation model, env-configurable). Vitest + Playwright (WebKit iPhone + Chromium). Railway hosting via Dockerfile with a persistent volume and healthcheck.
+**Stack:** TypeScript monorepo. Client: Vite + React 19 PWA (7 screens, service worker, strict same-origin CSP). Server: Express 5 + SQLite, SSE streaming, in-process cron (nightly backup, timed purges). Claude models via the official SDK, model-routed (cheap text model + stronger vision/escalation model, env-configurable). Vitest (86) + Playwright (88, WebKit iPhone + Chromium). Railway hosting via Dockerfile with a persistent volume and healthcheck.
 
-**Git:** branch `master`, last commit 2026-07-30 — "Verification suite, gate runner, and fixes found by running it."
+**Git:** branch `master`, last commit 2026-07-30 — "Verification suite, gate runner, and fixes found by running it." An install-day worktree branch is 8 commits ahead (last 2026-08-23) and awaits merge: gap audit, auth route-inventory pinning, server-side string table with untranslated-copy gates, one-command install-day check, deploy runbook, and a shell-serving fix the gates caught.
 
-**Runs today:** Yes, immediately, in mock-AI mode (`npm run dev`, mock answers watermarked, no credentials needed). Both typechecks clean; both dists already built. Production boot deliberately refuses to start without proper env setup — runs-with-setup by design, nothing broken. (A worktree branch for the install-day build also exists.)
+**Runs today:** Yes, immediately, in mock-AI mode (`npm run dev`, mock answers watermarked, no credentials needed). On the worktree branch, `npm run install-day` is one command: build, an 11-check smoke run driving the real letter fixtures through the live HTTP pipeline, then the printed phone runbook. Deploying is one documented command; nothing is deployed yet.
 
 **Top 3 gaps (docs vs code):**
-1. The spec the repo cites is not in the repo: ~98 references to numbered requirements (REQ-001…REQ-020) across 45 files, and four spec docs named in the README, but none of those files exist — requirement coverage can't actually be audited.
-2. The release gate has never fully passed: recorded verification run is `overall: incomplete` — 10/12 automated gates green, but the two live-model safety evals (one-question discipline, hostile-letter red-team) never ran, plus 5 manual/on-device gates outstanding.
-3. The primary interaction rests on an untested assumption with no built fallback: browser Spanish speech-recognition quality on the target phone is the flagged biggest unknown, and the documented fallback (server-side speech-to-text behind the same interface) is deferred and unimplemented.
+1. The spec documents the repo cites still do not exist anywhere on the machine. The worktree branch now carries a gap audit mapping every referenced requirement and product law to enforcing code and tests, but one requirement number is referenced nowhere and half the law numbering is reconstruction — only the original spec file can settle those.
+2. The release gate has never fully passed: 10 of 12 automated gates green, but the two live-model safety evals (one-question discipline, hostile-letter red-team) have never run, plus 5 manual/on-device gates outstanding; there is no deployment.
+3. Spanish dictation on her actual phone is still the biggest unknown. The failure is now designed for — a first-class typing path and a printed fallback card ship on the worktree branch — but the documented server-side dictation exit (decision D4) remains unbuilt.
 
-**Highest-leverage next move:** Run the two live-model evals to green and do the on-phone dictation test — the only things standing between "verified on a laptop" and "safe to hand to the actual user."
+**Highest-leverage next move:** Merge the install-day branch, run the two live evals to green, deploy with the one command, then the install-day visit that settles the dictation question.
 
 ---
 
