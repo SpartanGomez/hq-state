@@ -7,22 +7,22 @@ Sanitized for public hosting: no credentials, no env values, no personal or clie
 
 ## ACTIVE
 
-### RelayFlow (dir: SpargoEmailAutomations)
+### RelayFlow (dir: SpargoEmailAutomations) — section regenerated 2026-08-24
 
-**What it is:** Diagram-first email/SMS automation builder — describe a customer journey in plain English, a deterministic compiler turns it into a canonical workflow you edit on a React Flow canvas, with a real compliance/deliverability sending backend growing underneath the demo.
+**What it is:** Diagram-first email/SMS automation builder that now carries a real execution engine underneath the demo: a scheduled sequence runner, one-off broadcast sends, and full deliverability rails, built to run a six-email welcome flow for the K² newsletter on a five-minute schedule.
 
-**Stack:** Next.js 16 (App Router) + React 19 + TypeScript strict, Tailwind v4, React Flow 12 + dagre, Zustand, Zod v4. Supabase (Postgres) for the send-side data with a local fallback. Transactional email provider (Resend SDK) behind a signed inbound webhook; SMS provider SDK; both default to mock. Vercel hosting with a code-level "public surface only" deploy gate. 19 Vitest suites (~138 tests).
+**Stack:** Next.js 16 (App Router) + React 19 + TypeScript strict, Tailwind v4, React Flow 12 + dagre, Zustand, Zod v4. Supabase (Postgres, 7 migrations) for send-side data AND scheduling (pg_cron calling an authenticated tick endpoint), with a zero-config local file fallback behind every store. Transactional email provider behind a signed inbound webhook with a full event ledger; mock providers plus an engine-wide dry-run mode by default; one shared rate limiter paced at 2 requests/second. Vercel hosting with a code-level "public surface only" deploy gate. 34 Vitest suites (260 tests).
 
-**Git:** branch `main`, last commit 2026-08-18 — "Drop the reconcile poll; handle provider-side suppression events."
+**Git:** three mission phases (execution engine → deliverability/broadcasts/templates/hardening → ledger, soft-bounce escalation, flow simulator) sit as one open draft PR of per-deliverable commits; base `main` last moved 2026-08-18.
 
-**Runs today:** Yes — `npm run dev` runs the full builder, AI generation, simulation, and mock sends with zero config. Typecheck clean. Real sending requires env setup and is deliberately single-recipient, suppression-checked, and confirmation-gated; no bulk endpoint exists.
+**Runs today:** Yes — zero config: the builder demo, plus the whole execution loop in dry-run (enroll → scheduled steps → suppression gate → logs → completion) against local file stores. One-command sequence rehearsal on an injected clock, a step-preview renderer, and a 10-check health command. Real sending stays deliberately unprovisioned; the engine refuses double-sends by construction and auto-suppresses on hard bounce, complaint, or repeated soft bounces.
 
 **Top 3 gaps (docs vs code):**
-1. README still describes a mock-only demo, but a production compliance backend is shipped and proven: DB schema (2 migrations), signed provider webhook, signed unsubscribe (footer + RFC 8058 one-click), deploy-time public-surface gate, real deliveries verified through a live deployment.
-2. The promised "swap the repository for a real DB later" never happened for the core domain — workflows, contacts, automations, and templates are still per-browser localStorage; only opt-out/brand/audit data is server-side.
-3. Compliance rails exist but nothing drives them over time: there is no durable sequence runner (queue + scheduler). A 6-step welcome flow with wait-for-event steps exists, seeded as a template, but nothing executes it end to end — sends today are manual, single, confirmation-gated.
+1. Everything is built but nothing is provisioned or merged: the draft PR awaits review, and the dedicated database project, hosting environment, webhook registration, and the five-minute schedule are all owner-hands steps, scripted end to end in the repo's deploy runbook.
+2. The six-email welcome copy in the seed is still draft — the approved text never landed in the repo; swapping it in is a data update, not a deploy.
+3. The canvas demo and the execution engine remain parallel systems: compiled canvas workflows (branches, wait-for-event) do not feed the runner — only linear sequences and broadcasts execute — and the demo's core domain (contacts, automations) is still per-browser localStorage.
 
-**Highest-leverage next move:** Build the durable workflow runner that executes a compiled workflow over real time on top of the already-proven suppression/unsubscribe/send-log rails — that one piece converts compliance plumbing into an actually-automating product.
+**Highest-leverage next move:** The owner provisioning pass (database, hosting, webhook, schedule — under an hour with the runbook), a dry-run soak, then the approved welcome copy: that turns three phases of engine work into the product's first standing production workload.
 
 ---
 
@@ -121,6 +121,6 @@ Next: execute the deletion pass already queued in the mission log.
 
 **3. Buzz fleet v1 — give the five agents hands.** The bridge is built and tested (five chartered Claude agents in the team-chat workspace, mention-gated, loop-guarded, capped); v0 is deliberately conversation-only. v1 attaches each charter's actual tools (file access for the ops agent, project lookups for the product agents) and hardens agent identity storage into Windows Credential Manager — converting a demo into the staffed HQ the standing missions already assume. Effort: ~15–25 hours.
 
-**4. K² launch sequence as RelayFlow's first real workflow.** The kanban board already holds a K² marketing track with an email channel, and RelayFlow's whole pitch is "describe the journey, get the automation." Authoring the K² launch/welcome sequence as a RelayFlow workflow makes an in-house product the sequence runner's first customer — the runner (RelayFlow's own top gap) gets built against a real need instead of a hypothetical, and K² gets a launch asset. Effort: ~10–15 hours on top of the runner build.
+**4. K² launch sequence as RelayFlow's first real workflow.** Largely realized as of 2026-08-24: the sequence runner now exists and ships with the six-step K² welcome flow seeded, rehearsable, and dry-run-verified end to end. What remains of this idea is the owner provisioning pass, the approved welcome copy, and — longer term — the bridge that lets compiled canvas workflows (branches, wait-for-event) feed the runner. Effort remaining: provisioning is under an hour; the canvas bridge is its own project.
 
 **5. HQ dashboard that reads this file.** The ops directory already contains hand-built command-center HTML dashboards, and this repo now exposes machine state at a stable raw URL. A single static page that fetches and renders HQ-STATE.md — active projects up top, staleness highlighted by last-commit age — turns the existing dashboard habit into one that is always current and readable from any device, including by the chat-side Claude this file was built for. Effort: ~4–6 hours.
