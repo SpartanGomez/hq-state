@@ -38,7 +38,7 @@ Sanitized for public hosting: no credentials, no env values, no personal or clie
 
 **Top 3 gaps (docs vs code):**
 1. The spec documents the repo cites still do not exist anywhere on the machine. The worktree branch now carries a gap audit mapping every referenced requirement and product law to enforcing code and tests, but one requirement number is referenced nowhere and half the law numbering is reconstruction — only the original spec file can settle those.
-2. The release gate has never fully passed: 10 of 12 automated gates green, but the two live-model safety evals (one-question discipline, hostile-letter red-team) have never run, plus 5 manual/on-device gates outstanding; there is no deployment.
+2. The release gate has never fully passed: 10 of 12 automated gates green, but the two live-model safety evals (one-question discipline, hostile-letter red-team) are now **blocked on billing, not code** — every reachable Anthropic account on this machine is out of credit or revoked (probed 2026-08-23; unblock is ~5 minutes in the billing console, ~US$1 per eval round, see the repo's EVAL-RESULTS.md). 5 manual/on-device gates also outstanding; there is no deployment.
 3. Spanish dictation on her actual phone is still the biggest unknown. The failure is now designed for — a first-class typing path and a printed fallback card ship on the worktree branch — but the documented server-side dictation exit (decision D4) remains unbuilt.
 
 **Highest-leverage next move:** Merge the install-day branch, run the two live evals to green, deploy with the one command, then the install-day visit that settles the dictation question.
