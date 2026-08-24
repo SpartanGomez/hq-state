@@ -93,8 +93,8 @@ Next: skim the routes and smoke-test to establish what's actually built.
 **brand-os** — Personal branding/positioning doc system (strategy boards, scorecards, launch runbook) whose produced site launched 2026-08-11; not an app, and its audit flags private ops actions still owed.
 Next: clear its own flagged security items; keep the audit catalog private.
 
-**buzz-bridge** — Working Node bridge that runs five Claude-backed agents as members of a Nostr-based team-chat workspace (mention-gated, loop-guarded, daily reply caps); tested 5/5 on 2026-07-31, runs with setup.
-Next: v1 — attach per-charter tools and harden agent identity storage into the OS credential store.
+**buzz-bridge** — Working Node bridge that runs five Claude-backed agents as members of a Nostr-based team-chat workspace (mention-gated, loop-guarded, daily reply caps); tested 5/5 on 2026-07-31, runs with setup, has never run live. The v1 build plan is now written (2026-08-24): a five-mission burn day attaching per-charter tools, a public agent-identity domain, and OS-credential-store key storage, with a red-team acceptance gate.
+Next: owner reads the work order in the ops directory, confirms its assumptions (the setup decisions it plans around were never recorded on this machine), and calls the burn day.
 
 **voice-inbox (+ Voice-to-Desk router)** — Drop-audio-in-folder voice capture, now a closed loop (built 2026-08-23): the batch script feeds the local whisper-based transcriber, then auto-launches a small Node router that classifies each new transcript with one Claude API call and appends correctly-shaped lines (todo / journal / note, project-tagged) to DailyReflect's drainable inbox file — spoken in the car, on the desk within 30 seconds of transcription, zero new UI. Crash-safe at-most-once appends, a daily API-call cap, dry-run mode, no transcript content in logs, its own per-project key in a local untracked env file; 26/26 offline tests including two that assert the line grammar against DailyReflect's real parser. Repo initialized (local, per-deliverable commits).
 Next: operator setup — put the project's API key in the router's local env file and eyeball one dry run (OPERATOR-GUIDE steps 4–5); no live call has been made yet.
@@ -105,7 +105,7 @@ Next: the blockers are all external/ops (carrier registration, ESP automation-ti
 **OWP-Email-Marketing** — Earlier planning stage of the same effort: journey diagrams, audit/dedupe/migration gameplans, plus raw audience exports (real-person data that must never leave this machine); last touched 2026-05-13.
 Next: fold decisions into V2 and relocate the personal-data exports out of any synced or publishable path.
 
-**_harvest-2026** — Private ops working directory: command-center dashboards, mission log, portfolio dossier, dated harvest notes, safe-to-delete lists, ~11 project sub-buckets; not an app.
+**_harvest-2026** — Private ops working directory: command-center dashboards, the mission queue (regenerated to v3 on 2026-08-24, reflecting the whole weekend burn), the agent-fleet v1 work order, portfolio dossier, dated harvest notes, safe-to-delete lists, ~11 project sub-buckets; not an app. Now a local-only git repo tracking just the mission documents.
 Next: leave as-is; when cleaning, act on its own safe-to-delete lists.
 
 **_to_delete-2026-07-30** — Staging folder for a pending delete ritual (retired project copies).
@@ -119,7 +119,7 @@ Next: execute the deletion pass already queued in the mission log.
 
 **2. Voice → Desk router.** Realized 2026-08-23: built as `router/` inside voice-inbox and wired into the existing transcription batch script — see the voice-inbox entry above. What remains of this idea is the operator's five-minute key setup and one real-memo dry run; after that, using it.
 
-**3. Buzz fleet v1 — give the five agents hands.** The bridge is built and tested (five chartered Claude agents in the team-chat workspace, mention-gated, loop-guarded, capped); v0 is deliberately conversation-only. v1 attaches each charter's actual tools (file access for the ops agent, project lookups for the product agents) and hardens agent identity storage into Windows Credential Manager — converting a demo into the staffed HQ the standing missions already assume. Effort: ~15–25 hours.
+**3. Buzz fleet v1 — give the five agents hands.** Planned in full 2026-08-24: the ops directory now holds the complete work order — five missions (~14 hours, one burn day) attaching per-charter tools behind default-deny allowlists and a sandboxed draft-outbox, moving agent keys into the OS credential store, publishing verified public identities on the fleet's own domain, and ending in a red-team acceptance gate. Hard laws carried in writing: mention-gated, loop-guarded, daily caps, no money/email/calendar, silence is never consent. What remains of this idea is the owner's GO: read the order, confirm its assumptions (the setup decisions it plans around were never recorded on this machine), and call the burn day.
 
 **4. K² launch sequence as RelayFlow's first real workflow.** Largely realized as of 2026-08-24: the sequence runner now exists and ships with the six-step K² welcome flow seeded, rehearsable, and dry-run-verified end to end. What remains of this idea is the owner provisioning pass, the approved welcome copy, and — longer term — the bridge that lets compiled canvas workflows (branches, wait-for-event) feed the runner. Effort remaining: provisioning is under an hour; the canvas bridge is its own project.
 
