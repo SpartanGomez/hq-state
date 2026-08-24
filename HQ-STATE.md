@@ -47,20 +47,20 @@ Sanitized for public hosting: no credentials, no env values, no personal or clie
 
 ### SpargoDomains
 
-**What it is:** A single-user, safety-first domain search-and-purchase tool over the official Cloudflare Registrar API — invent a name, verify live availability and price, register it at cost in your own Cloudflare account — now with a public marketing front door and a credential-free demo.
+**What it is:** A single-user, safety-first domain search-and-purchase tool over the official Cloudflare Registrar API — invent a name, verify live availability and price, register it at cost in your own Cloudflare account — with a public, crawler-indexable marketing site, a credential-free demo, a free DNS resilience checker, and a draft pricing page.
 
-**Stack:** React 19 + Vite + TypeScript, Tailwind + shadcn-style UI, TanStack Query. Hono API on Cloudflare Workers (one Worker serves SPA + API). Drizzle ORM on Cloudflare D1. Cloudflare Access JWT auth gated to a single admin identity. Money as decimal strings via big.js. Nightly cron reconciler (read-only). ~129 Vitest cases + 11 Playwright tests.
+**Stack:** React 19 + Vite + TypeScript, Tailwind + shadcn-style UI, TanStack Query. Hono API on Cloudflare Workers — one Worker serves the API, the private SPA, and a build-time-prerendered public site (28 routes, hostname-aware, sitemap + robots). Drizzle ORM on Cloudflare D1. Cloudflare Access JWT auth gated to a single admin identity. Money as decimal strings via big.js. Nightly cron reconciler (read-only). 163 Vitest cases + 11 Playwright tests.
 
-**Git:** branch `main`, last commit 2026-08-17 — "Act on the marketing handoff: hero, screener, and the demo's honest ending."
+**Git:** branch `main`, last commit 2026-08-17 — "Act on the marketing handoff: hero, screener, and the demo's honest ending." Branch `launch-kit`, completed 2026-08-23, holds 7 unmerged commits: SEO prerendering, the DNS checker, audit fixes (honest 404s, privacy page), pricing with a deliberately stubbed checkout, 20 compare/guide content pages, 20 launch-post drafts, and a scripted go-live checklist. Nothing merged, nothing deployed.
 
-**Runs today:** Runs with light setup — `npm run dev` after a one-time local DB migration; full product works with zero credentials (mock provider + dry-run defaults). Typecheck clean on all three configs. Production config ships purchase-disabled and dry-run by default.
+**Runs today:** Yes — `npm run dev` after a one-time local DB migration; the full product works with zero credentials (mock provider + dry-run defaults). Verify suite green on the branch (typecheck, lint, tests, build). Production still ships purchase-disabled and dry-run.
 
 **Top 3 gaps (docs vs code):**
-1. The retention feature the business case is staked on doesn't exist: every planning doc justifies the subscription with renewal/expiry notifications, but there is no notification path, no payments, and the nightly job only reconciles records — renewal risk surfaces passively in-app only.
-2. Marketing docs lag the shipped code: the documented hero copy and two-question screener were superseded by the Aug 17 commit (new hero, third screener question, matching schema migration) but the marketing briefs were never updated.
-3. Stale test counts and route lists in the README and handoff docs (README claims 66 unit tests; actual ~129 across 17 files; two mounted API route groups missing from the architecture blurb).
+1. The retention loop is still unbuilt and is now publicly promised: the draft pricing page sells renewal alerts and resilience monitoring as "ships during your first year," but no notification path or payments exist — checkout is a labeled placeholder by design.
+2. The launch is parked one approval away: `launch-kit` contains the entire go-live kit with a checklist scripted to about 25 minutes, but stays unmerged until the owner signs off on the pricing default, the competitor-claim citations, and the post drafts.
+3. Smaller staleness: README still cites old test counts, and the domain's public contact mailbox named on the privacy page can't receive mail yet — wiring it up is a checklist step.
 
-**Highest-leverage next move:** Build the renewal/expiry notification loop on top of the existing nightly reconciler and portfolio-health data — the single retention hook every doc names as the reason anyone would pay.
+**Highest-leverage next move:** Approve and run the launch checklist (merge, migrate, deploy, submit the sitemap — under 30 minutes), then build the renewal/expiry notification loop the pricing page now promises.
 
 ---
 
