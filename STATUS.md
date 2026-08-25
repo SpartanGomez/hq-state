@@ -53,3 +53,27 @@ Deliverable record: PRODUCTS.md (+ dashboard copy) · hq-dashboard/index.html
 (LAUNCHPAD, verified rendering locally before commit) · the private tour in
 the ops directory · CLAUDE.md standing-rule amendment · this file. One commit
 per deliverable; sanitize grep run clean including email-shaped strings.
+
+## Second pass + full account sweep, 2026-08-25
+
+All surfaces re-verified at the header level, and the owner's entire code-host
+account walked: every repository's visibility, freshness, and local↔remote
+mapping recorded in the private dossier.
+
+Corrections and finds:
+- The audience product's pre-rename domain serves the SAME current site (the
+  first pass wrongly called it stale); the gap is a missing canonical
+  redirect, one rule to add. The www hostname resolves for neither that
+  product nor the domain product — two DNS records fix both.
+- The live portfolio site's deployed source is NOT in its repository (last
+  commit months before the relaunch) — a salvage commit protects it.
+- The meditation app has a store-launch branch on the remote that no local
+  file mentions (signing work done); its audio-fix branch is local-only.
+- The automation engine's weekend work sits as one open draft PR, confirmed.
+- The sweep found three recent private repos absent from the local workspace
+  — a chat-side ops board with eight open decisions (one carries a real
+  invoice amount), a private client-page mock, and a small voice utility —
+  plus roughly a dozen dormant pre-2026 repos worth a batch archive pass.
+  Specifics live in the private dossier only.
+- The staged local delete ritual is confirmed safe: everything it removes
+  survives in the account's private repositories.
