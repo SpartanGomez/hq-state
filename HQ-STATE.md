@@ -84,8 +84,8 @@ Next: use it, don't develop it.
 **LeagueClimbOS** — First-generation League-coaching overlay dashboard (Node + React + Electron), idle since mid-July and superseded by the compliance-hardened rewrite in LeagueClimber; its old self-contained installer was built for personal use only and must never be shared.
 Next: confirm retirement in favor of LeagueClimber and archive.
 
-**LeagueClimber (RANK ONE)** — Compliance-first League coaching monorepo (Fastify API, Tauri 2 overlay, web simulator, policy/analytics packages); runs in mock mode today, but every headline differentiator ships disabled behind feature flags awaiting written platform approval.
-Next: run its verify + compliance suites, then decide — pursue approval or ship the fallback experience as v1.
+**LeagueClimber (RANK ONE)** — Compliance-first League coaching monorepo (Fastify API, Tauri 2 overlay, web simulator, policy/analytics packages). Verdict mission 2026-08-24: the repo is now under local git, and the full verify + compliance suites ran green in mock mode — 1610 TypeScript tests, the 77-test policy gate, 29 Rust tests, both build-time scanners, plus a runtime smoke of the simulator and API — after two small fixes (doc formatting drift, and a secret-scanner regex bug that failed every correctly configured machine). VERDICT.md is on record: everything enabled sits in the platform's permitted tier, the five gated differentiators stay off pending written approval either way, and the named pick is **ship-fallback-now** — run it as v1 on a personal development key while the five written policy questions go out in parallel; approval blocks nothing v1 needs.
+Next: owner reads VERDICT.md and, on agreement, starts the v1 pilot (personal dev credential into the local env, adapters flipped to live) and submits the Q1–Q5 letter the same week.
 
 **PrincipleFirstJobber** — Tauri 2 + SvelteKit + SQLite/Drizzle job-search desktop app with AI-assisted tooling; last touched 2026-05-19, runs with setup, but the README is still scaffold boilerplate so actual scope is undocumented.
 Next: skim the routes and smoke-test to establish what's actually built.
