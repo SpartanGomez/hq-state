@@ -13,6 +13,7 @@ Format contract for the dashboard: one `## Name` block per product; `- key: valu
   - 2026-08-23 — free DNS resilience checker live and working at /tools/dns-checker
   - 2026-08-23 — pricing page live (free tier + founding annual, clearly marked draft); Renewal Sentinel deployed dark behind its kill switch
 - next: five signed-in minutes — search-console verification + sitemap submission — then the announcement drafts go out
+- note: second pass 2026-08-25 — robots and sitemap both answer 200; the www hostname doesn't resolve (one DNS record fixes it)
 
 ## K² — KnowledgeSquared
 - url: https://k2knowledge.com/today
@@ -22,7 +23,7 @@ Format contract for the dashboard: one `## Name` block per product; `- key: valu
   - 2026-08-23 — calm redesign merged and deployed: three-item nav, 30-second reader scan, calm Browse, keyboard lenses; verified in EN and RU
   - daily — the Morning Paper self-updates on schedule (fresh again on 2026-08-25, streak unbroken since early July)
 - next: one two-minute console visit sets the model-spend cap — the last launch gate; then the recurring send moves onto the automation engine's rails
-- note: an older duplicate of the site still answers on its original subdomain with stale content and no redirect — worth one redirect rule
+- note: second pass 2026-08-25 — the pre-rename domain serves the SAME current site (not stale as first recorded), but with no redirect: one canonical redirect closes the duplicate; also the www hostname doesn't resolve at all
 
 ## Sember
 - url: https://app.sembermeditation.com
