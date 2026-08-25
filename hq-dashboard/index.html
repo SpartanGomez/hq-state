@@ -19,6 +19,12 @@
   a{color:var(--steel)}
   code{font-family:ui-monospace,Consolas,monospace;font-size:.92em;color:var(--steel)}
 
+  /* tabs */
+  #tabs{display:flex;gap:8px;margin-bottom:14px}
+  #tabs button{background:var(--panel);color:var(--dim);border:1px solid var(--line);padding:9px 18px;font-family:inherit;font-size:13px;letter-spacing:.1em;cursor:pointer;flex:1 1 auto}
+  #tabs button.on{background:var(--panel2);color:var(--chalk);border-color:var(--steel)}
+  @media(max-width:640px){#tabs button{padding:12px 10px;font-size:12.5px}}
+
   /* status strip */
   #strip{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px;font-size:12px;color:var(--mute)}
   #fetchedAt{font-family:ui-monospace,Consolas,monospace;color:var(--dim)}
@@ -38,7 +44,39 @@
   .badge.bad{border-color:var(--bad);color:var(--bad)}
   .badge.cool{border-color:var(--steel);color:var(--steel)}
 
-  /* active project cards */
+  /* LAUNCHPAD: live-now cards */
+  .lgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  @media(max-width:820px){.lgrid{grid-template-columns:1fr}}
+  .live{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--ok);padding:14px 16px}
+  .live h3{font-size:17px;color:var(--chalk);font-weight:normal;margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+  a.bigurl{display:block;background:var(--panel2);border:1px solid var(--steel);padding:12px 14px;margin-bottom:10px;font-family:ui-monospace,Consolas,monospace;font-size:15px;color:#dce8f4;text-decoration:none;word-break:break-all;line-height:1.35}
+  a.bigurl:hover{background:#2c3a4c}
+  a.bigurl .arrow{color:var(--steel)}
+  @media(max-width:640px){a.bigurl{font-size:16px;padding:14px}}
+  .live ul{margin:0 0 10px 18px}
+  .live li{font-size:12.5px;color:var(--dim);line-height:1.55;padding:2px 0}
+  .live li b{color:var(--ink);font-weight:normal}
+  .live .dt{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;color:var(--steel)}
+  .live .chk{font-size:11.5px;color:var(--mute);font-style:italic;line-height:1.5;margin-bottom:8px}
+  .live .nxt{border-top:1px dashed #2a323d;padding-top:7px;font-size:12px;color:var(--dim);line-height:1.5}
+  .live .nxt .lbl2{color:var(--mute);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase}
+  .live .note{font-size:11.5px;color:var(--warn);line-height:1.5;margin-top:6px}
+
+  /* SHIPS NEXT rows */
+  .ship{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--warn);padding:11px 14px;margin-bottom:8px;display:flex;gap:12px;align-items:baseline}
+  .ship .n{font-family:ui-monospace,Consolas,monospace;color:var(--warn);font-size:14px;flex:0 0 auto}
+  .ship .act{font-size:13.5px;color:var(--ink);line-height:1.5}
+  .ship .out{font-size:12px;color:var(--mute);line-height:1.45;font-style:italic}
+  @media(max-width:640px){.ship{padding:13px 14px}.ship .act{font-size:14.5px}}
+
+  /* not-yet-live compact cards */
+  .nyl{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--warn);padding:12px 14px}
+  .nyl h3{font-size:14.5px;color:var(--chalk);font-weight:normal;margin-bottom:6px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:baseline}
+  .nyl .chk{font-size:11.5px;color:var(--mute);font-style:italic;line-height:1.5;margin-bottom:6px}
+  .nyl .nxt{font-size:12.5px;color:var(--dim);line-height:1.5}
+  .nyl .nxt b{color:var(--ink);font-weight:normal}
+
+  /* active project cards (repo state) */
   .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   @media(max-width:820px){.grid{grid-template-columns:1fr}}
   .card{background:var(--panel);border:1px solid var(--line);padding:14px 16px}
@@ -110,8 +148,13 @@
 <div class="wrap">
   <header>
     <h1><span>▣</span> SPARTAN HQ — LIVE</h1>
-    <span class="sub">rendered from <a href="https://github.com/SpartanGomez/hq-state" target="_blank" rel="noopener">hq-state / HQ-STATE.md</a></span>
+    <span class="sub">rendered from <a href="https://github.com/SpartanGomez/hq-state" target="_blank" rel="noopener">hq-state</a> — PRODUCTS.md + HQ-STATE.md</span>
   </header>
+
+  <div id="tabs">
+    <button id="tabLaunch" class="on">▲ LAUNCHPAD</button>
+    <button id="tabRepo">▦ REPO STATE</button>
+  </div>
 
   <div id="strip">
     <button id="refresh">refresh</button>
@@ -120,20 +163,23 @@
   </div>
 
   <div id="errbar"></div>
-  <div id="loading">fetching HQ-STATE.md…</div>
-  <div id="content"></div>
+  <div id="loading">fetching PRODUCTS.md + HQ-STATE.md…</div>
+  <div id="launchpad"></div>
+  <div id="content" style="display:none"></div>
 
   <footer>
-    Staleness by last-commit age: <span class="dot ok">●</span> under 7 days · <span class="dot warn">●</span> under 30 · <span class="dot bad">●</span> 30 or more · unmarked = no date in the entry.<br>
-    This page reads exactly one public file and nothing else — no accounts, no analytics, no storage beyond a local cached copy for offline viewing.
+    Staleness: <span class="dot ok">●</span> under 7 days · <span class="dot warn">●</span> under 30 · <span class="dot bad">●</span> 30 or more · unmarked = no date found.<br>
+    This page reads exactly two public files from this repo — PRODUCTS.md and HQ-STATE.md — and nothing else. No accounts, no analytics, no storage beyond a local cached copy for offline viewing.
   </footer>
 </div>
-<noscript><p style="color:#d9a44a">This dashboard needs JavaScript to fetch HQ-STATE.md. The raw file itself is at <a href="https://raw.githubusercontent.com/SpartanGomez/hq-state/main/HQ-STATE.md">raw.githubusercontent.com</a>.</p></noscript>
+<noscript><p style="color:#d9a44a">This dashboard needs JavaScript to fetch its two source files. Raw: <a href="https://raw.githubusercontent.com/SpartanGomez/hq-state/main/PRODUCTS.md">PRODUCTS.md</a> · <a href="https://raw.githubusercontent.com/SpartanGomez/hq-state/main/HQ-STATE.md">HQ-STATE.md</a></p></noscript>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js" integrity="sha512-xeUh+KxNyTufZOje++oQHstlMQ8/rpyzPuM+gjMFYK3z5ILJGE7l2NvYL+XfliKURMpBIKKp1XoPN/qswlSMFA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
 "use strict";
-const RAW_URL = "https://raw.githubusercontent.com/SpartanGomez/hq-state/main/HQ-STATE.md";
+// Same-origin copies, kept byte-identical with the repo-root files by the standing rule.
+const STATE_URL = "HQ-STATE.md";
+const PRODUCTS_URL = "PRODUCTS.md";
 const $ = id => document.getElementById(id);
 
 // ---------- safe storage (localStorage on PC, memory in sandboxed previews) ----------
@@ -144,7 +190,7 @@ const store = (() => {
   } catch(e){ return { get:k=>mem[k]??null, set:(k,v)=>{mem[k]=v;} }; }
 })();
 
-// ---------- markdown helpers (marked from cdnjs; degrade to a mini formatter if it never loaded) ----------
+// ---------- markdown helpers ----------
 const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 const hasMarked = () => typeof marked !== "undefined";
 function miniInline(s){
@@ -170,14 +216,107 @@ function newestDate(text){
   if(!m) return null;
   return m.map(d=>d).sort().pop();
 }
-function ageBadge(dateStr){
+function ageBadge(dateStr, label){
   if(!dateStr) return '<span class="badge">NO DATE</span>';
   const days = Math.max(0, Math.floor((Date.now() - new Date(dateStr+"T00:00:00")) / 864e5));
   const cls = days < 7 ? "ok" : days < 30 ? "warn" : "bad";
-  return '<span class="badge '+cls+'">'+days+'D · '+esc(dateStr)+"</span>";
+  return '<span class="badge '+cls+'">'+(label?esc(label)+" ":"")+days+'D · '+esc(dateStr)+"</span>";
 }
 
-// ---------- parser: tolerant of the file's real structure ----------
+// ================= PRODUCTS.md parser =================
+// Contract (documented in PRODUCTS.md): "## Name" blocks; "- key: value" fields;
+// "- shipped:" followed by indented "  - " bullets; final "## SHIPS NEXT" is a plain list.
+function parseProducts(md){
+  const chunks = md.replace(/\r/g,"").split(/\n(?=##\s)/);
+  const products = [], shipsNext = [];
+  for(const ch of chunks){
+    const h = ch.match(/^##\s+(.+?)\s*\n/);
+    if(!h) continue; // preamble
+    const name = h[1].trim();
+    const lines = ch.slice(h[0].length).split("\n");
+    if(/^SHIPS NEXT$/i.test(name)){
+      for(const ln of lines){
+        const m = ln.match(/^-\s+(.*)$/);
+        if(m){
+          const parts = m[1].split(/\s+—\s+/);
+          shipsNext.push({ action: parts[0].trim(), out: parts.slice(1).join(" — ").trim() });
+        }
+      }
+      continue;
+    }
+    const p = { name, fields:{}, shipped:[] };
+    let inShipped = false;
+    for(const ln of lines){
+      const sub = ln.match(/^\s{2,}-\s+(.*)$/);
+      if(sub && inShipped){ p.shipped.push(sub[1].trim()); continue; }
+      const f = ln.match(/^-\s+([\w][\w -]*?):\s*(.*)$/);
+      if(f){
+        const key = f[1].trim().toLowerCase();
+        inShipped = (key === "shipped");
+        if(!inShipped) p.fields[key] = f[2].trim();
+        continue;
+      }
+      if(ln.trim()) inShipped = false;
+    }
+    p.status = (p.fields.status||"").toUpperCase();
+    p.checkedDate = newestDate(p.fields.checked||"");
+    p.lastShipped = newestDate(p.shipped.join("\n")) || p.checkedDate;
+    products.push(p);
+  }
+  return { products, shipsNext };
+}
+
+function urlLabel(u){ return u.replace(/^https?:\/\//,"").replace(/\/$/,""); }
+
+function renderLaunchpad(md){
+  const { products, shipsNext } = parseProducts(md);
+  const live = products.filter(p=>p.status==="LIVE");
+  const notyet = products.filter(p=>p.status!=="LIVE");
+  const out = [];
+
+  out.push("<h2>Live now — "+live.length+" products serving</h2>");
+  out.push('<div class="lgrid">');
+  for(const p of live){
+    const isUrl = /^https?:\/\//.test(p.fields.url||"");
+    out.push('<div class="live">'
+      + "<h3>"+esc(p.name)+" "+ageBadge(p.lastShipped,"SHIPPED")+"</h3>"
+      + (isUrl ? '<a class="bigurl" href="'+esc(p.fields.url)+'" target="_blank" rel="noopener">'+esc(urlLabel(p.fields.url))+' <span class="arrow">↗</span></a>'
+               : (p.fields.url?'<div class="chk">'+inline(p.fields.url)+"</div>":""))
+      + (p.fields.checked?'<div class="chk">'+inline(p.fields.checked)+"</div>":"")
+      + (p.shipped.length?"<ul>"+p.shipped.map(s=>{
+          const dm = s.match(/^(20\d{2}-\d{2}-\d{2}|daily)\s+—\s+([\s\S]*)$/);
+          return dm ? '<li><span class="dt">'+esc(dm[1])+"</span> — "+inline(dm[2])+"</li>" : "<li>"+inline(s)+"</li>";
+        }).join("")+"</ul>":"")
+      + (p.fields.next?'<div class="nxt"><span class="lbl2">next</span> '+inline(p.fields.next)+"</div>":"")
+      + (p.fields.note?'<div class="note">⚠ '+inline(p.fields.note)+"</div>":"")
+      + "</div>");
+  }
+  out.push("</div>");
+
+  out.push("<h2>Ships next / needs one click</h2>");
+  shipsNext.forEach((s,i)=>{
+    out.push('<div class="ship"><span class="n">'+(i+1)+"</span><div>"
+      + '<div class="act">'+inline(s.action)+"</div>"
+      + (s.out?'<div class="out">'+inline(s.out)+"</div>":"")
+      + "</div></div>");
+  });
+
+  if(notyet.length){
+    out.push("<h2>Not yet live — built, waiting</h2>");
+    out.push('<div class="lgrid">');
+    for(const p of notyet){
+      out.push('<div class="nyl">'
+        + "<h3>"+esc(p.name)+" "+ageBadge(p.lastShipped,"BUILT")+"</h3>"
+        + (p.fields.checked?'<div class="chk">'+inline(p.fields.checked)+"</div>":"")
+        + (p.fields.next?'<div class="nxt"><b>The one action:</b> '+inline(p.fields.next)+"</div>":"")
+        + "</div>");
+    }
+    out.push("</div>");
+  }
+  $("launchpad").innerHTML = out.join("\n");
+}
+
+// ================= HQ-STATE.md parser (repo-state tab, unchanged) =================
 function splitSections(md){
   const lines = md.replace(/\r/g,"").split("\n");
   const sections = [];
@@ -261,8 +400,7 @@ function parseBuilds(sec){
   return { items, leftovers };
 }
 
-// ---------- render ----------
-function render(md){
+function renderState(md){
   const sections = splitSections(md);
   const out = [];
 
@@ -325,43 +463,75 @@ function render(md){
     }
   }
   $("content").innerHTML = out.join("\n");
-  $("loading").style.display = "none";
 }
+
+// ---------- tabs ----------
+function showTab(which){
+  const launch = which === "launch";
+  $("launchpad").style.display = launch ? "" : "none";
+  $("content").style.display = launch ? "none" : "";
+  $("tabLaunch").classList.toggle("on", launch);
+  $("tabRepo").classList.toggle("on", !launch);
+  try { store.set("hq-dash-tab", which); } catch(e){}
+}
+$("tabLaunch").addEventListener("click", ()=>showTab("launch"));
+$("tabRepo").addEventListener("click", ()=>showTab("repo"));
 
 // ---------- fetch / refresh / offline ----------
 function stamp(when, cached){
   const d = new Date(when);
   $("fetchedAt").textContent = (cached ? "cached copy from " : "fetched ") + d.toLocaleString([], {month:"short", day:"numeric", hour:"2-digit", minute:"2-digit", second:"2-digit"});
 }
+async function fetchOne(url, marker){
+  const res = await fetch(url + "?t=" + Date.now(), { cache: "no-store" });
+  if(!res.ok) throw new Error("HTTP " + res.status + " on " + url);
+  const text = await res.text();
+  if(!marker.test(text)) throw new Error(url.split("/").pop() + " did not look right");
+  return text;
+}
 async function load(){
   const btn = $("refresh");
   btn.disabled = true; btn.textContent = "fetching…";
   $("errbar").style.display = "none";
-  try {
-    const res = await fetch(RAW_URL + "?t=" + Date.now(), { cache: "no-store" });
-    if(!res.ok) throw new Error("HTTP " + res.status);
-    const text = await res.text();
-    if(!/^#\s*HQ-STATE/m.test(text)) throw new Error("response did not look like HQ-STATE.md");
-    render(text);
-    const at = Date.now();
-    stamp(at, false);
-    try { store.set("hq-dash-cache", JSON.stringify({ text, at })); } catch(e){}
-  } catch(err){
-    const cachedRaw = store.get("hq-dash-cache");
-    let note = "";
-    if(cachedRaw){
-      try { const c = JSON.parse(cachedRaw); render(c.text); stamp(c.at, true);
-        note = " Showing the last copy this device fetched.";
-      } catch(e){}
-    }
-    if(!note) $("loading").textContent = "nothing to show yet — retry when back online.";
-    $("errbar").innerHTML = "<b>Couldn't reach HQ-STATE.md</b> ("+esc(err.message)+")."+note+" Check the connection, then hit refresh.";
-    $("errbar").style.display = "block";
-  } finally {
-    btn.disabled = false; btn.textContent = "refresh";
+  const errs = [];
+  let gotAny = false;
+
+  const [prodRes, stateRes] = await Promise.allSettled([
+    fetchOne(PRODUCTS_URL, /^#\s*PRODUCTS/m),
+    fetchOne(STATE_URL, /^#\s*HQ-STATE/m)
+  ]);
+
+  const at = Date.now();
+  if(prodRes.status === "fulfilled"){
+    renderLaunchpad(prodRes.value); gotAny = true;
+    try { store.set("hq-dash-products", JSON.stringify({ text: prodRes.value, at })); } catch(e){}
+  } else {
+    errs.push(prodRes.reason.message);
+    const c = store.get("hq-dash-products");
+    if(c){ try { const o = JSON.parse(c); renderLaunchpad(o.text); gotAny = true; } catch(e){} }
   }
+  if(stateRes.status === "fulfilled"){
+    renderState(stateRes.value); gotAny = true;
+    try { store.set("hq-dash-cache", JSON.stringify({ text: stateRes.value, at })); } catch(e){}
+  } else {
+    errs.push(stateRes.reason.message);
+    const c = store.get("hq-dash-cache");
+    if(c){ try { const o = JSON.parse(c); renderState(o.text); gotAny = true; } catch(e){} }
+  }
+
+  if(errs.length === 0){ stamp(at, false); }
+  else {
+    if(gotAny) stamp(at, true);
+    $("errbar").innerHTML = "<b>Fetch trouble</b> ("+esc(errs.join(" · "))+")."+(gotAny?" Showing what this device has.":" Nothing to show yet — retry when back online.");
+    $("errbar").style.display = "block";
+  }
+  if(!gotAny) $("loading").textContent = "nothing to show yet — retry when back online.";
+  else $("loading").style.display = "none";
+
+  btn.disabled = false; btn.textContent = "refresh";
 }
 $("refresh").addEventListener("click", load);
+showTab(store.get("hq-dash-tab") === "repo" ? "repo" : "launch");
 load();
 </script>
 </body>
