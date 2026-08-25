@@ -5,6 +5,21 @@ Sanitized for public hosting: no credentials, no env values, no personal or clie
 
 ---
 
+## STRATEGY — portfolio verdicts + the fridge page, sanitized (2026-08-24)
+
+1. Portfolio thesis: one triangle sharing rails (the automation engine, the domain product, the audience product), one household project, one personal operating system — everything else feeds a front, parks with a written wake condition, or dies this month.
+2. The binding constraint is owner-click time, not code: a five-item, roughly forty-minute gate queue is holding back five otherwise-finished lines.
+3. SHIP verdicts with weeks attached: the domain product's two parked owner steps and the meditation app's one-command deploy and the voice loop's key (this week); the automation engine's provisioning pass, the notice loop's go-live flip, and the household project's fund-evals-deploy sequence (next week); the operations-role decision and the research erratum (the week after).
+4. The audience product keeps shipping, but its recurring send moves off manual sessions onto the automation engine's rails — four stalled distribution weeks are the portfolio's one repeated failure, and the fix is structural, not motivational.
+5. FEED verdicts: the daily companion, the kanban board, the archive-mining tool (whose dogfood run is a mission, with a written graduation condition), the dashboards, the thinking instruments.
+6. PARK verdicts, each with a wake condition: the agent fleet (the go order), the compliance-gated game project (its own same-day verdict ran green and named ship-the-fallback — the portfolio layer still parks the launch decision with the owner, with a dated conversion to KILL), the consulting kit (the identity decision), two creative projects (their seasons).
+7. KILL verdicts with salvage-first lists: the superseded overlay, four overlapping job-search tools (the weekly scan survives), a morning-ritual spec, the empty and absorbed folders — the long-staged delete ritual executes them.
+8. Where a verdict contradicts sunk cost, the dossier says so plainly: the largest build has the weakest founder-fit, and a long-planned migration is judged by its monthly bleed, not its documentation.
+9. Anti-synergy named: three unrelated audiences must never multiply manual distribution — rails are shared, audiences are not, and no fourth audience starts this quarter.
+10. The standing rule this quarter: no new builds while the gate queue is non-empty; automate a channel or drop it. Full reasoning lives in the private dossier; the operating law is public in HQ-DOCTRINE.md in this repo.
+
+---
+
 ## ACTIVE
 
 ### RelayFlow (dir: SpargoEmailAutomations) — section regenerated 2026-08-25 (freestyle round 3, timeboxed)
